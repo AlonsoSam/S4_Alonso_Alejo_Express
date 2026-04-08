@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automotriz | Sport Selection</title>
+    <style>
+        :root { --gold: #c5a059; --dark: #1a1a1a; --gray: #f4f4f4; }
+        body { font-family: 'Georgia', serif; background-color: white; color: var(--dark); margin: 0; padding: 0; }
+        nav { padding: 40px; text-align: center; border-bottom: 1px solid #eee; }
+        h1 { font-weight: 300; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 10px; }
+        .container { max-width: 900px; margin: 40px auto; padding: 20px; }
+        .buttons { margin-bottom: 50px; }
+        button { 
+            background: none; border: 1px solid var(--dark); padding: 12px 25px; 
+            cursor: pointer; text-transform: uppercase; letter-spacing: 2px; 
+            transition: 0.4s; margin: 0 10px; font-size: 11px;
+        }
+        button:hover { background: var(--dark); color: white; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; animation: fadeIn 1s; }
+        th { text-align: left; padding: 15px; border-bottom: 2px solid var(--dark); text-transform: uppercase; font-size: 12px; }
+        td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h1>Sport Selection</h1>
+    <p style="color: #888; font-style: italic;">Curated Luxury Vehicles</p>
+    <div class="buttons">
+        <button onclick="cargarDatos('vehiculos')">Inventario</button>
+        <button onclick="cargarDatos('vendedores')">Asesores</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="contenido">
+        <p style="text-align: center; color: #bbb;">Seleccione una categoría para ver los detalles.</p>
+    </div>
+</div>
+
+<script>
+    async function cargarDatos(ruta) {
+        const div = document.getElementById('contenido');
+        div.innerHTML = '<p style="text-align: center;">Cargando...</p>';
+        
+        try {
+            const respuesta = await fetch('/' + ruta);
+            const datos = await respuesta.json();
+            
+            let html = '<table><thead><tr>';
+            
+            // Generar cabeceras basadas en las llaves del JSON
+            Object.keys(datos[0]).forEach(key => {
+                html += `<th>${key}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            
+            // Generar filas
+            datos.forEach(item => {
+                html += '<tr>';
+                Object.values(item).forEach(val => {
+                    html += `<td>${val}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            div.innerHTML = html;
+        } catch (error) {
+            div.innerHTML = '<p>Error al conectar con la base de datos.</p>';
+        }
+    }
+</script>
+
+</body>
+</html>
